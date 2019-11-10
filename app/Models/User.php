@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -13,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, Notifiable, HasMediaTrait;
+    use HasApiTokens, Notifiable, HasMediaTrait, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -63,8 +64,22 @@ class User extends Authenticatable implements HasMedia
         return $this->where('username', $phone_no)->first();
     }
 
+    /**
+     * Create the collection to hold user's avatar
+     */
     public function registerMediaCollections()
     {
         $this->addMediaCollection('avatar')->useDisk('do_spaces');
+    }
+
+    // relationships
+
+    /**
+     * Gets the details of the service provider attached to this user, if any.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function serviceProvider()
+    {
+        return $this->hasOne(ServiceProvider::class);
     }
 }

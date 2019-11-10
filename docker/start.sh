@@ -33,6 +33,11 @@ php artisan key:generate --force
 #php artisan config:cache
 
 # ----------------------------------------------------------------------
+# Create roles for the app.
+# ----------------------------------------------------------------------
+php artisan db:seed --class=RolesTableSeeder
+
+# ----------------------------------------------------------------------
 # Generate secret for auth.
 # ----------------------------------------------------------------------
 #php artisan jwt:secret
