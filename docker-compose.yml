@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - 8088:80
+    volumes: 
+      - ./:/var/www/
+    env_file:
+      - .env
+    container_name: seaka_api
+    networks:
+      - servers_external_network
+    tty: true
+networks:
+  servers_external_network:
+    external: true
