@@ -27,6 +27,23 @@ class AuthAPIController extends Controller
     }
 
     /**
+     * This method checks to see if a role is allowed to be added to the current user.
+     * @param User $user
+     * @param string $role_name
+     * @return bool
+     */
+    private function canAddRole(User $user, string $role_name)
+    {
+        $roles = $user->getRoleNames();
+
+        if (count($roles) > 2 || in_array($role_name, $roles) || in_array(Constant::ADMIN, $roles)){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Action to create a new user on the app.
      * @param Request $request
      * @return mixed
@@ -71,14 +88,23 @@ class AuthAPIController extends Controller
             }
         }
 
-        $user =  new User([
-            'phone_no' => Str::prefix234ToPhoneNumber ($request->input('phone_no')),
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'middle_name' => $request->input('middle_name'),
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password'))
-        ]);
+        $user = User::where('phone_no', Str::prefix234ToPhoneNumber ($request->input('phone_no')))->first();
+
+        if (!empty($user)){
+            $canAcceptRole = $this->canAddRole($user, $request->input('role'));
+            if (!$canAcceptRole){
+                return response()->sendJsonError([], ResponseMessage::USER_CANT_TAKE_NEW_ROLE, ResponseCode::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }else{
+            $user =  new User([
+                'phone_no' => Str::prefix234ToPhoneNumber ($request->input('phone_no')),
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'middle_name' => $request->input('middle_name'),
+                'email' => $request->input('email'),
+                'password' => bcrypt($request->input('password'))
+            ]);
+        }
 
         try{
             DB::beginTransaction();

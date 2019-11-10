@@ -22,4 +22,5 @@ class ResponseMessage
     const PASSWORD_CHANGE_SUCCESSFUL = 'Password change was successful.';
     const PICTURE_UPLOAD_SUCCESSFUL = '%s upload was successful';
     const ERROR_OCCURRED = 'An error occurred, please try again later.';
+    const USER_CANT_TAKE_NEW_ROLE = 'This user already exist and can not accept this new role.';
  }
