@@ -7,7 +7,11 @@ use App\Models\User;
 use App\Constants\Status;
 use App\Classes\DO_spaces;
 use Illuminate\Support\Str;
+use App\Constants\Constant;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Models\ServiceProvider;
+use Illuminate\Support\Facades\DB;
 use App\Constants\ResponseMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +26,11 @@ class AuthAPIController extends Controller
         $this->middleware('auth:api')->except(['login', 'register', 'testDOSave', 'getPic',]);
     }
 
+    /**
+     * Action to create a new user on the app.
+     * @param Request $request
+     * @return mixed
+     */
     public function register(Request $request)
     {
 
@@ -30,15 +39,40 @@ class AuthAPIController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'role' => [
+                'required', Rule::in([Constant::ADMIN, Constant::SERVICE_PROVIDER, Constant::CUSTOMER])
+            ],
         ]);
 
         if ($validator->fails()){
             return Response::sendJsonError($validator->errors(), ResponseMessage::INVALID_PARAMS,  ResponseCode::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        // validate based on the selected roles
+        if ($request->input('role') == Constant::ADMIN){
+
+        }
+
+        if ($request->input('role') == Constant::SERVICE_PROVIDER){
+            $validator = Validator::make($request->all(), [
+                'business_name' => 'required|string|min:2',
+                'category' => 'required|integer|exists:categories,id',
+                'location' => 'required|string',
+                'opening_hours' => 'required|string',
+                'general_information' => 'nullable|string',
+                'instagram' => 'nullable|string',
+                'twitter' =>'nullable|string',
+                'linkedin' => 'nullable|url'
+            ]);
+
+            if ($validator->fails()){
+                return Response::sendJsonError($validator->errors(), ResponseMessage::INVALID_PARAMS,  ResponseCode::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+
         $user =  new User([
-            'phone_no' => $request->input('phone_no'),
+            'phone_no' => Str::prefix234ToPhoneNumber ($request->input('phone_no')),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
             'middle_name' => $request->input('middle_name'),
@@ -46,14 +80,44 @@ class AuthAPIController extends Controller
             'password' => bcrypt($request->input('password'))
         ]);
 
-        if (!$user->save()){
-            return Response::sendJsonError([], ResponseMessage::COULDNT_CREATE_USER, ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
+        try{
+            DB::beginTransaction();
+            // first save to db
+            $user->save();
+
+            // second save based on role
+            if ($request->input('role') === Constant::SERVICE_PROVIDER){
+                ServiceProvider::create([
+                    'user_id' => $user->id,
+                    'category_id' => $request->input('category'),
+                    'business_name' => $request->input('business_name'),
+                    'location' => $request->input('location'),
+                    'opening_hours' => $request->input('opening_hours'),
+                    'general_information' => $request->input('general_information'),
+                    'instagram' => $request->input('instagram'),
+                    'twitter' => $request->input('twitter'),
+                    'linkedin' => $request->input('linkedin'),
+                ]);
+            }
+
+            DB::commit();
+        }catch (\Exception $e){
+            DB::rollBack();
+            return response()->sendJsonError([], ResponseMessage::COULDNT_CREATE_USER, ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->sendJsonSuccess([], ResponseMessage::CREATED_USER, ResponseCode::HTTP_CREATED);
+        // assign user a role
+        $user->assignRole($request->input('role'));
 
+        // TODO: CALL LOGIN ACTION HERE IF NEEDED
+        return response()->sendJsonSuccess([], ResponseMessage::CREATED_USER, ResponseCode::HTTP_CREATED);
     }
 
+    /**
+     * Action to handle the login operation.
+     * @param Request $request
+     * @return mixed
+     */
     public function login (Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -91,7 +155,8 @@ class AuthAPIController extends Controller
             [
                 'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
-                'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
+                'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+                'user_details' => $user->load('serviceProvider', 'roles:id,name'),
             ],
             ResponseMessage::LOGIN_SUCCESSFUL,
             ResponseCode::HTTP_OK
@@ -99,6 +164,7 @@ class AuthAPIController extends Controller
     }
 
     /**
+     * Action to log the current user out.
      * @param Request $request
      * @return mixed
      */
@@ -110,12 +176,14 @@ class AuthAPIController extends Controller
     }
 
     /**
+     * Action to get current user details.
      * @param Request $request
      * @return mixed
      */
     public function user(Request $request)
     {
-        return response()->sendJsonSuccess($request->user(), Status::SUCCESS, ResponseCode::HTTP_OK);
+        $user = $request->user()->load('serviceProvider', 'roles:id,name');
+        return response()->sendJsonSuccess($user, Status::SUCCESS, ResponseCode::HTTP_OK);
     }
 
     /**

@@ -21,4 +21,5 @@ class ResponseMessage
     const CURRENT_PASSWORD_INVALID = 'Your current password is invalid.';
     const PASSWORD_CHANGE_SUCCESSFUL = 'Password change was successful.';
     const PICTURE_UPLOAD_SUCCESSFUL = '%s upload was successful';
+    const ERROR_OCCURRED = 'An error occurred, please try again later.';
  }
