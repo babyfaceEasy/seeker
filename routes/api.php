@@ -33,8 +33,11 @@ Route::group(['prefix' => '/v1'], function (){
         Route::put('/password', 'AuthAPIController@changePassword');
     });
 
-    Route::group(['prefix' => '/user'], function () {
-
+    Route::group(['prefix' => '/category'], function () {
+        Route::get('', 'CategoryController@index');
+        Route::get('/{category_id}', 'CategoryController@show');
+        Route::put('/{category_id}', 'CategoryController@update');
+        Route::delete('/{category_id}', 'CategoryController@destroy');
     });
 
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => '/password'], function() {
