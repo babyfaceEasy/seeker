@@ -21,4 +21,8 @@ class ResponseMessage
     const CURRENT_PASSWORD_INVALID = 'Your current password is invalid.';
     const PASSWORD_CHANGE_SUCCESSFUL = 'Password change was successful.';
     const PICTURE_UPLOAD_SUCCESSFUL = '%s upload was successful';
+    const ERROR_OCCURRED = 'An error occurred, please try again later.';
+    const USER_CANT_TAKE_NEW_ROLE = 'This user already exist and can not accept this new role.';
+    const UPDATE_WAS_SUCCESSFUL = '%s update was successful';
+    const DELETE_WAS_SUCCESSFUL = '%s delete was successful';
  }
