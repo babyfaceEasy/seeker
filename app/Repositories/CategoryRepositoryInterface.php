@@ -8,7 +8,7 @@ interface CategoryRepositoryInterface
 
     public function findById(int $categoryId);
 
-    public function update($categoryId);
+    public function update(int $categoryId);
 
     public function delete(int $categoryId);
 }
