@@ -40,6 +40,10 @@ Route::group(['prefix' => '/v1'], function (){
         Route::delete('/{category_id}', 'CategoryController@destroy');
     });
 
+    Route::group(['prefix' => '/user'], function(){
+        Route::post('/enable', 'UserController@enableUser');
+    });
+
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => '/password'], function() {
         Route::post('/create', 'PasswordResetController@create');
         Route::post('/reset', 'PasswordResetController@reset');
