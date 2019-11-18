@@ -20,4 +20,10 @@ class Category extends Model
             'last_updated' => $this->updated_at != null ? $this->updated_at->diffForHumans() : null,
         ];
     }
+
+    // relationship
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
 }

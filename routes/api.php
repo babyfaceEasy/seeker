@@ -44,6 +44,10 @@ Route::group(['prefix' => '/v1'], function (){
         Route::post('/enable', 'UserController@enableUser');
     });
 
+    Route::group(['prefix' => '/services'], function (){
+       Route::get('/', 'ServiceController@index');
+    });
+
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => '/password'], function() {
         Route::post('/create', 'PasswordResetController@create');
         Route::post('/reset', 'PasswordResetController@reset');
