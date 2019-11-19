@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'user_id', 'category_id'];
 
     public function format()
     {

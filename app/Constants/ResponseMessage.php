@@ -15,6 +15,7 @@ class ResponseMessage
     const LOGOUT_SUCCESSFUL = 'Successfully Logged out.';
     const PASSWORD_RESET_LINK_SENT = 'A link for you to reset your password has been sent to you.';
     const RESOURCE_NOT_FOUND = '%s not found.';
+    const RESOURCE_CREATED = '%s has been created.';
     const PASSWORD_TOKEN_INVALID = 'This password token is invalid.';
     const PASSWORD_RESET_SUCCESSFUL = 'The password reset operation was successful.';
     const INVALID_CREDENTIALS_SUPPLIED = 'Invalid credentials.';

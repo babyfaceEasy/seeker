@@ -46,6 +46,7 @@ Route::group(['prefix' => '/v1'], function (){
 
     Route::group(['prefix' => '/services'], function (){
        Route::get('/', 'ServiceController@index');
+       Route::post('/', 'ServiceController@create');
     });
 
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => '/password'], function() {
