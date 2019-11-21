@@ -6,6 +6,7 @@ namespace App\Constants;
 
 class ResponseMessage
 {
+    const ERROR = "There seems to be a code error with the method being implemented. Do you mind trying later?";
     const INVALID_PARAMS = 'Invalid Parameters';
     const COULDNT_CREATE_USER = 'An error occurred, we could not create this user.';
     const USER_NOT_FOUND = 'User can not be found';
