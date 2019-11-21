@@ -44,9 +44,18 @@ Route::group(['prefix' => '/v1'], function (){
         Route::post('/enable', 'UserController@enableUser');
     });
 
-    Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => '/password'], function() {
+    Route::group(['prefix' => '/services'], function (){
+       Route::get('/', 'ServiceController@index');
+       Route::post('/', 'ServiceController@create');
+    });
+
+    Route::group(['namespace' => 'Auth', 'middleware' => 'auth:api', 'prefix' => '/password'], function() {
         Route::post('/create', 'PasswordResetController@create');
         Route::post('/reset', 'PasswordResetController@reset');
         Route::get('/find/{token}', 'PasswordResetController@find');
+    });
+
+    Route::group(['prefix' => '/providers', 'middleware' => ['auth:api', 'role:service_provider']], function (){
+        Route::post('/services', 'ServiceProviderController@createService');
     });
 });
