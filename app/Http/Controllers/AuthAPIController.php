@@ -19,6 +19,15 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response as ResponseCode;
 
+
+/**
+ * @OA\Info(
+ *      version="1.0.0",
+ *      title="Seaka Back end Documentation",
+ *      description="This holds the documentation to Seaka Back end"
+ * )
+ *
+ */
 class AuthAPIController extends Controller
 {
     public function __construct()
@@ -34,7 +43,8 @@ class AuthAPIController extends Controller
      */
     private function canAddRole(User $user, string $role_name)
     {
-        $roles = $user->getRoleNames();
+        // get/RoleNames() => returns a collection normally.
+        $roles = $user->getRoleNames()->toArray();
 
         if (count($roles) > 2 || in_array($role_name, $roles) || in_array(Constant::ADMIN, $roles)){
             return false;
@@ -47,6 +57,20 @@ class AuthAPIController extends Controller
      * Action to create a new user on the app.
      * @param Request $request
      * @return mixed
+     */
+    /**
+     * @OA\Post(
+     *     path="/auth/signup",
+     *     tags={"register", "signup"},
+     *     summary="Add a new to the application.",
+     *     operationId="signup",
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid input/parameters."
+     *     ),
+     *
+     *     requestBody={"$ref": "#/components/requestBodies/Pet"}
+     * )
      */
     public function register(Request $request)
     {
@@ -136,7 +160,7 @@ class AuthAPIController extends Controller
         $user->assignRole($request->input('role'));
 
         // TODO: CALL LOGIN ACTION HERE IF NEEDED
-        return response()->sendJsonSuccess([], ResponseMessage::CREATED_USER, ResponseCode::HTTP_CREATED);
+        return response()->sendJsonSuccess(['user_id' =>  $user->id], ResponseMessage::CREATED_USER, ResponseCode::HTTP_CREATED);
     }
 
     /**
