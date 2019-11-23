@@ -44,7 +44,7 @@ class UserController extends Controller
         $repositoryResponse = $this->userRepository->enableUser($user);
 
         if ($repositoryResponse == Status::SUCCESS){
-            return response()->sendJsonSuccess();
+            return response()->sendJsonSuccess([]);
         }
 
         return response()->sendJsonError([], ResponseMessage::ERROR_OCCURRED, ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
