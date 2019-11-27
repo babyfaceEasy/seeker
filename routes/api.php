@@ -57,5 +57,8 @@ Route::group(['prefix' => '/v1'], function (){
 
     Route::group(['prefix' => '/providers', 'middleware' => ['auth:api', 'role:service_provider']], function (){
         Route::post('/services', 'ServiceProviderController@createService');
+        Route::put('/services/{service_id}', 'ServiceProviderController@updateService');
+        Route::get('/services', 'ServiceProviderController@getMyServices');
+        Route::delete('/services/{service_id}', 'ServiceProviderController@destroy');
     });
 });

@@ -14,6 +14,7 @@ class Service extends Model
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'name' => $this->name,
             'category_id' => $this->category_id,
             'created_on' => $this->created_at != null ? $this->created_at->diffForHumans() : null,
         ];
