@@ -26,5 +26,6 @@ class ResponseMessage
     const ERROR_OCCURRED = 'An error occurred, please try again later.';
     const USER_CANT_TAKE_NEW_ROLE = 'This user already exist and can not accept this new role.';
     const UPDATE_WAS_SUCCESSFUL = '%s update was successful';
+    const CREATE_WAS_SUCCESSFUL = '%s create was successful';
     const DELETE_WAS_SUCCESSFUL = '%s delete was successful';
  }
