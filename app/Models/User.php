@@ -17,6 +17,25 @@ class User extends Authenticatable implements HasMedia
     use HasApiTokens, Notifiable, HasMediaTrait, HasRoles;
 
     /**
+     * Tells us how the user object would be returned.
+     * @return array
+     */
+    public function format()
+    {
+        return [
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'middle_name' => $this->middle_name,
+            'phone' => $this->phone_no,
+            'status' => $this->status,
+            'role' => implode(",", $this->getRoleNames()->toArray()),
+            'phone_confirmed' => (empty($this->phone_no_confirmed)) ? 'No' : 'Yes',
+            'email_confirmed' => (empty($this->email_confirmed)) ? 'No' : 'Yes',
+            'created_on' => $this->created_at,
+        ];
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

@@ -21,7 +21,19 @@ class UserController extends Controller
     }
 
     /**
-     * Action to enable a new user.
+     * Get all users in the application
+     * @param Request $request
+     * @return mixed
+     */
+    public function getAllUsers(Request $request)
+    {
+        $users = $this->userRepository->all();
+
+        return response()->sendJsonSuccess(['data' => $users]);
+    }
+
+    /**
+     * Action to enable a user.
      * @param Request $request
      * @return mixed
      */
@@ -49,5 +61,34 @@ class UserController extends Controller
 
         return response()->sendJsonError([], ResponseMessage::ERROR_OCCURRED, ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
 
+    }
+
+    /**
+     * Action to disable a user.
+     * @param Request $request
+     * @return mixed
+     */
+    public function disableUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()){
+            return response()->sendJsonError($validator->errors(), ResponseMessage::INVALID_PARAMS, ResponseCode::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user = User::find($request->input('id'));
+        if (empty($user)){
+            return response()->sendJsonError([], ResponseMessage::USER_NOT_FOUND, ResponseCode::HTTP_NOT_FOUND);
+        }
+
+        $response = $this->userRepository->disableUser($user);
+
+        if ($response == Status::ERROR){
+            return response()->sendJsonError([], ResponseMessage::ERROR_OCCURRED);
+        }
+
+        return response()->sendJsonSuccess([]);
     }
 }
