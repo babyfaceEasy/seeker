@@ -41,7 +41,9 @@ Route::group(['prefix' => '/v1'], function (){
     });
 
     Route::group(['prefix' => '/user'], function(){
+        Route::get('', 'UserController@getAllUsers');
         Route::post('/enable', 'UserController@enableUser');
+        Route::put('/disable', 'UserController@disableUser');
     });
 
     Route::group(['prefix' => '/services'], function (){
