@@ -5,6 +5,9 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Constants\Status;
+use App\QueryFilters\Sort;
+use App\QueryFilters\Active;
+use Illuminate\Pipeline\Pipeline;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -15,11 +18,24 @@ class UserRepository implements UserRepositoryInterface
      */
     public function all()
     {
+
+        $users = app(Pipeline::class)
+            ->send(User::class)
+            ->through([
+                Active::class,
+                Sort::class
+            ])
+            ->thenReturn()
+            ->paginate(5);
+        return $users;
+
+        /*
         return User::orderBy('status')
             ->get()
             ->map(function ($user){
                 return $user->format();
             });
+        */
     }
 
     /**

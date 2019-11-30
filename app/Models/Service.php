@@ -20,6 +20,24 @@ class Service extends Model
         ];
     }
 
+    public static function formatData($data)
+    {
+        $data = (object) $data;
+        dd($data->created_at);
+        return [
+            'id' => $data->id,
+            'user_id' => $data->user_id,
+            'name' => $data->name,
+            'category_id' => $data->category_id,
+            'created_on' => $data->created_at != null ? $data->created_at->diffForHumans() : null,
+        ];
+    }
+
+    public static function getSortableColumn() : string
+    {
+        return 'name';
+    }
+
     // relationships
     public function user()
     {
