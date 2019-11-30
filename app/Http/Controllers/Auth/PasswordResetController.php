@@ -38,21 +38,24 @@ class PasswordResetController extends Controller
             return response()->sendJsonError([], ResponseMessage::USER_NOT_FOUND, ResponseCode::HTTP_NOT_FOUND);
         }
 
+        $token = Str::random(60);
         $passwordReset = PasswordReset::updateOrCreate(
             ['email' => $request->input('email')],
             [
                 'email' => $request->input('email'),
-                'token' => Str::random(60)
+                'token' => $token
             ]
         );
 
         if ($user && $passwordReset){
+            /*
             $user->notify(
                 new PasswordResetRequest($passwordReset->token)
             );
+            */
         }
 
-        return response()->sendJsonSuccess([], ResponseMessage::PASSWORD_RESET_LINK_SENT, ResponseCode::HTTP_CREATED);
+        return response()->sendJsonSuccess(['token' => $token], ResponseMessage::PASSWORD_RESET_LINK_SENT, ResponseCode::HTTP_CREATED);
     }
 
     /**
