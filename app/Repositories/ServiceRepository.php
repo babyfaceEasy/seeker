@@ -6,6 +6,10 @@ namespace App\Repositories;
 
 use App\Models\Service;
 use App\Constants\Status;
+use App\QueryFilters\Sort;
+use App\QueryFilters\Active;
+use Illuminate\Pipeline\Pipeline;
+use function Aws\map;
 
 class ServiceRepository implements ServiceRepositoryInterface
 {
@@ -15,11 +19,23 @@ class ServiceRepository implements ServiceRepositoryInterface
      */
     public function all()
     {
-        return Service::orderBy('name')->get()->map(
-            function ($service){
-                return $service->format();
-            }
-        );
+        $services = app(Pipeline::class)
+            ->send(Service::class)
+            ->through([
+                Active::class,
+                Sort::class
+            ])
+            ->thenReturn()
+            ->paginate(5);
+
+        //dd($paginator);
+        /*
+        $paginator->items()[] = collect($paginator->items())->map(function($service){
+            return$service->format();
+        });
+        */
+
+        return $services;
     }
 
     /**

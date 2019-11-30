@@ -35,6 +35,11 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
+    public static function getSortableColumn() : string
+    {
+        return 'first_name';
+    }
+
     /**
      * The attributes that are mass assignable.
      *
