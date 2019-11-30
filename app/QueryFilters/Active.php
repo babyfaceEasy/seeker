@@ -3,7 +3,6 @@
 
 namespace App\QueryFilters;
 
-use Closure;
 use App\Constants\Status;
 class Active extends Filter
 {

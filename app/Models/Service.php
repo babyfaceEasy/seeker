@@ -9,8 +9,6 @@ class Service extends Model
 {
     protected $fillable = ['name', 'user_id', 'category_id'];
 
-    public $name = 'here';
-
     public function format()
     {
         return [

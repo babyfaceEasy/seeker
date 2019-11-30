@@ -5,8 +5,8 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Constants\Status;
-use App\QueryFilters\Active;
 use App\QueryFilters\Sort;
+use App\QueryFilters\Active;
 use Illuminate\Pipeline\Pipeline;
 
 class UserRepository implements UserRepositoryInterface

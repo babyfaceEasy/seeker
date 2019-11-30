@@ -9,7 +9,6 @@ use App\Constants\Status;
 use App\QueryFilters\Sort;
 use App\QueryFilters\Active;
 use Illuminate\Pipeline\Pipeline;
-use function Aws\map;
 
 class ServiceRepository implements ServiceRepositoryInterface
 {

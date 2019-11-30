@@ -3,7 +3,6 @@
 
 namespace App\QueryFilters;
 
-use App\Models\Service;
 
 class Sort extends Filter
 {
