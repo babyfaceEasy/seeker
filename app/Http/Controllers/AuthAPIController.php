@@ -14,6 +14,7 @@ use App\Models\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use App\Constants\ResponseMessage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -288,6 +289,7 @@ class AuthAPIController extends Controller
 
         $user = $request->user();
 
+        Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
         $user->addMedia($request->file('avatar'))->toMediaCollection('avatar');
 
         return response()->sendJsonSuccess([], sprintf(ResponseMessage::PICTURE_UPLOAD_SUCCESSFUL, 'Avatar'), ResponseCode::HTTP_OK);
@@ -302,7 +304,9 @@ class AuthAPIController extends Controller
     public function  getAvatar(Request $request)
     {
         //dd(Auth::user()->getMedia('avatar')->first()->getPath());
-        return Storage::disk('do_spaces')->response(Auth::user()->getMedia('avatar')->first()->getPath());
+        Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
+        $avatars = $request->user()->getMedia('avatar');
+        return Storage::disk('do_spaces')->response($avatars[count($avatars) - 1]->getPath());
     }
 
     public function testDOSave(Request $request)
