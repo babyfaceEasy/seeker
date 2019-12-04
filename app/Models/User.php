@@ -93,7 +93,9 @@ class User extends Authenticatable implements HasMedia
      */
     public function registerMediaCollections()
     {
-        $this->addMediaCollection('avatar')->useDisk('do_spaces');
+        $this->addMediaCollection('avatar')
+            ->useDisk('do_spaces')
+            ->singleFile();
     }
 
     // relationships
