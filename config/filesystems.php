@@ -55,17 +55,24 @@ return [
             'visibility' => 'public',
         ],
 
-        'public.profiles' => [
+        'profiles' => [
             'driver' => 'local',
             'root' => storage_path('app/public/profiles'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL').'/storage/profiles',
             'visibility' => 'public'
         ],
 
-        'public.requests' => [
+        'requests' => [
             'driver' => 'local',
             'root' => storage_path('app/public/requests'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL').'/storage/requests',
+            'visibility' => 'public'
+        ],
+
+        'service_providers' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/service_providers'),
+            'url' => env('APP_URL').'/storage/service_providers',
             'visibility' => 'public'
         ],
 

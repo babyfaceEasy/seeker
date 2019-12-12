@@ -102,6 +102,8 @@ class AuthAPIController extends Controller
                 'category' => 'required|integer|exists:categories,id',
                 'location' => 'required|string',
                 'opening_hours' => 'required|string',
+                'picture' => 'required',
+                'picture_two' => 'nullable',
                 'general_information' => 'nullable|string',
                 'instagram' => 'nullable|string',
                 'twitter' =>'nullable|string',
@@ -159,6 +161,13 @@ class AuthAPIController extends Controller
 
         // assign user a role
         $user->assignRole($request->input('role'));
+
+        if ($request->input('role') === Constant::SERVICE_PROVIDER){
+            $user->addMedia($request->file('picture'))->toMediaCollection('service_provider');
+            if ($request->hasFile('picture_two') && $request->file('picture_two') != null){
+                $user->addMedia($request->file('picture_two'))->toMediaCollection('service_provider');
+            }
+        }
 
         // TODO: CALL LOGIN ACTION HERE IF NEEDED
         return response()->sendJsonSuccess(['user_id' =>  $user->id], ResponseMessage::CREATED_USER, ResponseCode::HTTP_CREATED);
@@ -291,7 +300,7 @@ class AuthAPIController extends Controller
 
         //Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
         //Config::set('filesystems.disks.do_spaces.bucket', 'profile_pics');
-        $response = $user->addMedia($request->file('avatar'))->toMediaCollection('avatar');
+        $user->addMedia($request->file('avatar'))->toMediaCollection('avatar');
         $avatars = $request->user()->getMedia('avatar');
         //$avatars[count($avatars) - 1]->getFullUrl();
         // TODO : save this url on the users data. create a new column and save it.
