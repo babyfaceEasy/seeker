@@ -289,10 +289,15 @@ class AuthAPIController extends Controller
 
         $user = $request->user();
 
-        Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
-        $user->addMedia($request->file('avatar'))->toMediaCollection('avatar');
+        //Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
+        //Config::set('filesystems.disks.do_spaces.bucket', 'profile_pics');
+        $response = $user->addMedia($request->file('avatar'))->toMediaCollection('avatar');
+        $avatars = $request->user()->getMedia('avatar');
+        //$avatars[count($avatars) - 1]->getFullUrl();
+        // TODO : save this url on the users data. create a new column and save it.
+        //dd($response);
 
-        return response()->sendJsonSuccess([], sprintf(ResponseMessage::PICTURE_UPLOAD_SUCCESSFUL, 'Avatar'), ResponseCode::HTTP_OK);
+        return response()->sendJsonSuccess(['url' => $avatars[count($avatars) - 1]->getFullUrl()], sprintf(ResponseMessage::PICTURE_UPLOAD_SUCCESSFUL, 'Avatar'), ResponseCode::HTTP_OK);
 
     }
 
@@ -304,8 +309,11 @@ class AuthAPIController extends Controller
     public function  getAvatar(Request $request)
     {
         //dd(Auth::user()->getMedia('avatar')->first()->getPath());
-        Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
+        //Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
         $avatars = $request->user()->getMedia('avatar');
+        //dump($avatars[count($avatars) - 1]->getPath());
+        //dump($avatars[count($avatars) - 1]->getUrl());
+        //dd($avatars[count($avatars) - 1]->getFullUrl());
         return Storage::disk('do_spaces')->response($avatars[count($avatars) - 1]->getPath());
     }
 
