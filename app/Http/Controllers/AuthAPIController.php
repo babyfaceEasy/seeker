@@ -102,6 +102,8 @@ class AuthAPIController extends Controller
                 'category' => 'required|integer|exists:categories,id',
                 'location' => 'required|string',
                 'opening_hours' => 'required|string',
+                'picture' => 'required',
+                'picture_two' => 'nullable',
                 'general_information' => 'nullable|string',
                 'instagram' => 'nullable|string',
                 'twitter' =>'nullable|string',
@@ -159,6 +161,13 @@ class AuthAPIController extends Controller
 
         // assign user a role
         $user->assignRole($request->input('role'));
+
+        if ($request->input('role') === Constant::SERVICE_PROVIDER){
+            $user->addMedia($request->file('picture'))->toMediaCollection('service_provider');
+            if ($request->hasFile('picture_two') && $request->file('picture_two') != null){
+                $user->addMedia($request->file('picture_two'))->toMediaCollection('service_provider');
+            }
+        }
 
         // TODO: CALL LOGIN ACTION HERE IF NEEDED
         return response()->sendJsonSuccess(['user_id' =>  $user->id], ResponseMessage::CREATED_USER, ResponseCode::HTTP_CREATED);
@@ -289,10 +298,15 @@ class AuthAPIController extends Controller
 
         $user = $request->user();
 
-        Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
+        //Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
+        //Config::set('filesystems.disks.do_spaces.bucket', 'profile_pics');
         $user->addMedia($request->file('avatar'))->toMediaCollection('avatar');
+        $avatars = $request->user()->getMedia('avatar');
+        //$avatars[count($avatars) - 1]->getFullUrl();
+        // TODO : save this url on the users data. create a new column and save it.
+        //dd($response);
 
-        return response()->sendJsonSuccess([], sprintf(ResponseMessage::PICTURE_UPLOAD_SUCCESSFUL, 'Avatar'), ResponseCode::HTTP_OK);
+        return response()->sendJsonSuccess(['url' => $avatars[count($avatars) - 1]->getFullUrl()], sprintf(ResponseMessage::PICTURE_UPLOAD_SUCCESSFUL, 'Avatar'), ResponseCode::HTTP_OK);
 
     }
 
@@ -304,8 +318,11 @@ class AuthAPIController extends Controller
     public function  getAvatar(Request $request)
     {
         //dd(Auth::user()->getMedia('avatar')->first()->getPath());
-        Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
+        //Config::set('filesystems.disks.do_spaces.bucket', 'space-prac/seaka/profile');
         $avatars = $request->user()->getMedia('avatar');
+        //dump($avatars[count($avatars) - 1]->getPath());
+        //dump($avatars[count($avatars) - 1]->getUrl());
+        //dd($avatars[count($avatars) - 1]->getFullUrl());
         return Storage::disk('do_spaces')->response($avatars[count($avatars) - 1]->getPath());
     }
 
