@@ -18,24 +18,18 @@ class UserRepository implements UserRepositoryInterface
      */
     public function all()
     {
+        $content = new \StdClass();
+        $content->query_class =  User::class;
 
         $users = app(Pipeline::class)
-            ->send(User::class)
+            ->send($content)
             ->through([
                 Active::class,
-                Sort::class
+                Sort::class,
             ])
             ->thenReturn()
             ->paginate(5);
         return $users;
-
-        /*
-        return User::orderBy('status')
-            ->get()
-            ->map(function ($user){
-                return $user->format();
-            });
-        */
     }
 
     /**
