@@ -18,22 +18,18 @@ class ServiceRepository implements ServiceRepositoryInterface
      */
     public function all()
     {
+        $content = new \StdClass();
+        $content->query_class =  Service::class;
+        // nb: through calls the array in reverse, so the last class is called first and also
+        // data returned from one class is passed to the next class
         $services = app(Pipeline::class)
-            ->send(Service::class)
+            ->send($content)
             ->through([
                 Active::class,
-                Sort::class
+                Sort::class,
             ])
             ->thenReturn()
             ->paginate(5);
-
-        //dd($paginator);
-        /*
-        $paginator->items()[] = collect($paginator->items())->map(function($service){
-            return$service->format();
-        });
-        */
-
         return $services;
     }
 
