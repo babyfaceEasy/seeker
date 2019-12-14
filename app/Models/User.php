@@ -110,4 +110,13 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(ServiceProvider::class);
     }
+
+    /**
+     * Gets the details of the services saved for the given user.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function savedServices()
+    {
+        return $this->belongsToMany(Service::class);
+    }
 }

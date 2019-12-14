@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $users = $this->userRepository->all();
 
-        return response()->sendJsonSuccess(['data' => $users]);
+        return response()->sendJsonSuccess($users);
     }
 
     /**
