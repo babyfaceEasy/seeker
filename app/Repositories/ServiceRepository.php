@@ -106,4 +106,11 @@ class ServiceRepository implements ServiceRepositoryInterface
         return Status::ERROR;
     }
 
+    public function search(string $service_name)
+    {
+        $services = Service::where('name', 'like', "%$service_name%");
+        $services = $services->paginate(env('PER_PAGE', 5));
+        return $services;
+    }
+
 }

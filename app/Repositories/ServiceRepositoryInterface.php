@@ -15,4 +15,6 @@ interface ServiceRepositoryInterface
     public function update(int $category_id, array $data);
 
     public function delete(int $service_id);
+
+    public function search(string $service_name);
 }
