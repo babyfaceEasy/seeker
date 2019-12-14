@@ -106,4 +106,31 @@ class ServiceRepository implements ServiceRepositoryInterface
         return Status::ERROR;
     }
 
+    /**
+     * Searches for the availability of a given service in the system. Returns null if not found.
+     * @param string $service_name the string you want to search for.
+     * @return mixed
+     */
+    public function search(string $service_name)
+    {
+        $services = Service::where('name', 'like', "%$service_name%")
+            ->with('category:id,name')
+            ->with(['user' => function ($query){
+                $query->join('service_providers', 'users.id', '=', 'service_providers.user_id')
+                    ->select('users.id','first_name', 'last_name', 'business_name');
+            }])
+            ->paginate(env('PER_PAGE', 5));
+        return $services;
+    }
+
+    /**
+     * Finds a service by the given ID. Returns null if not found else Service object
+     * @param int $service_id the ID of the service
+     * @return mixed
+     */
+    public function findByID(int $service_id)
+    {
+        return Service::find($service_id);
+    }
+
 }
