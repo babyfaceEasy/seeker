@@ -4,6 +4,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use App\Models\Service;
 use App\Constants\Status;
 use App\QueryFilters\Sort;
 use App\QueryFilters\Active;
@@ -57,6 +58,42 @@ class UserRepository implements UserRepositoryInterface
         if (!$user->save()){
             return Status::ERROR;
         }
+
+        return Status::SUCCESS;
+    }
+
+    /**
+     * Adds a service to users saved services collection.
+     * @param User $user
+     * @param Service $service
+     * @return string
+     */
+    public function saveService(User $user, Service $service)
+    {
+        $user->savedServices()->attach($service);
+
+        return Status::SUCCESS;
+    }
+
+    /**
+     * returns user's saved services.
+     * @param User $user
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getSavedServices(User $user)
+    {
+        return $user->savedServices()->get();
+    }
+
+    /**
+     * Removes a service from users saved service collection.
+     * @param User $user
+     * @param Service $service
+     * @return string
+     */
+    public function removeService(User $user, Service $service)
+    {
+        $user->savedServices()->detach($service);
 
         return Status::SUCCESS;
     }

@@ -28,4 +28,5 @@ class ResponseMessage
     const UPDATE_WAS_SUCCESSFUL = '%s update was successful';
     const CREATE_WAS_SUCCESSFUL = '%s create was successful';
     const DELETE_WAS_SUCCESSFUL = '%s delete was successful';
+    const RESOURCE_WAS_SUCCESSFUL = '%s was successful';
  }

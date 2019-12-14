@@ -17,4 +17,6 @@ interface ServiceRepositoryInterface
     public function delete(int $service_id);
 
     public function search(string $service_name);
+
+    public function findByID(int $service_id);
 }
