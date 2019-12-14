@@ -66,5 +66,6 @@ Route::group(['prefix' => '/v1'], function (){
 
     Route::group(['prefix' => '/customers', 'middleware' => ['auth:api', 'role:customer']], function(){
         Route::get('/services/explore', 'CustomerController@exploreServices');
+        Route::get('/services/saved', 'customerController@savedServices');
     });
 });

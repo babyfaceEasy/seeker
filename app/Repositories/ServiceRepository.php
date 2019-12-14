@@ -108,8 +108,13 @@ class ServiceRepository implements ServiceRepositoryInterface
 
     public function search(string $service_name)
     {
-        $services = Service::where('name', 'like', "%$service_name%");
-        $services = $services->paginate(env('PER_PAGE', 5));
+        $services = Service::where('name', 'like', "%$service_name%")
+            ->with('category:id,name')
+            ->with(['user' => function ($query){
+                $query->join('service_providers', 'users.id', '=', 'service_providers.user_id')
+                    ->select('users.id','first_name', 'last_name', 'business_name');
+            }])
+            ->paginate(env('PER_PAGE', 5));
         return $services;
     }
 

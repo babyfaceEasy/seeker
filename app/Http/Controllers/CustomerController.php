@@ -38,4 +38,10 @@ class CustomerController extends Controller
         }
         return response()->sendJsonSuccess($services);
     }
+
+    public function savedServices(Request $request)
+    {
+
+    }
+
 }
