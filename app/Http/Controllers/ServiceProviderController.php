@@ -75,7 +75,7 @@ class ServiceProviderController extends Controller
     public function getMyServices(Request $request)
     {
         $services = $this->serviceRepository->getUserServices($request->user()->id);
-        return response()->sendJsonSuccess(['data' => $services]);
+        return response()->sendJsonSuccess($services);
     }
 
     public function destroy($service_id)

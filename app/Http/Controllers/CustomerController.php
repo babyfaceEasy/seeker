@@ -36,6 +36,6 @@ class CustomerController extends Controller
             // log error
             $services = [];
         }
-        return response()->sendJsonSuccess(['data' => $services]);
+        return response()->sendJsonSuccess($services);
     }
 }
