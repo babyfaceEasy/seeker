@@ -100,4 +100,14 @@ class CustomerController extends Controller
         return response()->sendJsonSuccess([], sprintf(ResponseMessage::RESOURCE_WAS_SUCCESSFUL, "Service removal"), ResponseCode::HTTP_OK);
     }
 
+    public function viewServiceProviderDetails(Request $request, $service_provider_id)
+    {
+        $serviceProvider = $this->userRepository->getUserDetailsByID($service_provider_id);
+        if (empty($serviceProvider)){
+            return response()->sendJsonError([], sprintf(ResponseMessage::RESOURCE_NOT_FOUND, "Service Provider"), ResponseCode::HTTP_NOT_FOUND);
+        }
+        $serviceProvider = $serviceProvider->load('serviceProvider');
+        return response()->sendJsonSuccess($serviceProvider);
+    }
+
 }

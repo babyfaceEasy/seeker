@@ -68,6 +68,7 @@ Route::group(['prefix' => '/v1'], function (){
         Route::post('/services/saved', 'CustomerController@saveService');
         Route::delete('/services/saved', 'CustomerController@removeService');
         Route::get('/services/explore', 'CustomerController@exploreServices');
-        Route::get('/services/saved', 'customerController@savedServices');
+        Route::get('/services/saved', 'CustomerController@savedServices');
+        Route::get('/user/{service_provider_id}', 'CustomerController@viewServiceProviderDetails');
     });
 });
