@@ -66,9 +66,11 @@ Route::group(['prefix' => '/v1'], function (){
 
     Route::group(['prefix' => '/customers', 'middleware' => ['auth:api', 'role:customer']], function(){
         Route::post('/services/saved', 'CustomerController@saveService');
+        Route::post('services/book', 'CustomerController@bookService');
         Route::delete('/services/saved', 'CustomerController@removeService');
         Route::get('/services/explore', 'CustomerController@exploreServices');
         Route::get('/services/saved', 'CustomerController@savedServices');
         Route::get('/user/{service_provider_id}', 'CustomerController@viewServiceProviderDetails');
+
     });
 });
