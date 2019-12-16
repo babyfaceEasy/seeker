@@ -15,4 +15,5 @@ interface UserRepositoryInterface
     public function saveService(User $user, Service $service);
     public function removeService(User $user, Service $service);
     public function getSavedServices(User $user);
+    public function getUserDetailsByID(int $id);
 }

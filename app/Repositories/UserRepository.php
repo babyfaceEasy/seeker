@@ -97,4 +97,15 @@ class UserRepository implements UserRepositoryInterface
 
         return Status::SUCCESS;
     }
+
+    /**
+     * Gets the details of the given user by checking the DB for the passed ID.
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     */
+    public function getUserDetailsByID(int $id)
+    {
+        $userDetails = User::with('roles:id,name')->find($id);
+        return $userDetails;
+    }
 }
