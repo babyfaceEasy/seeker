@@ -4,9 +4,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Service extends Model
+class Service extends Model implements HasMedia
 {
+    use HasMediaTrait;
     protected $fillable = ['name', 'user_id', 'category_id'];
 
     public function format()
@@ -17,25 +20,22 @@ class Service extends Model
             'name' => $this->name,
             'category_id' => $this->category_id,
             'created_on' => $this->created_at != null ? $this->created_at->diffForHumans() : null,
-        ];
-    }
-
-    public static function formatData($data)
-    {
-        $data = (object) $data;
-        dd($data->created_at);
-        return [
-            'id' => $data->id,
-            'user_id' => $data->user_id,
-            'name' => $data->name,
-            'category_id' => $data->category_id,
-            'created_on' => $data->created_at != null ? $data->created_at->diffForHumans() : null,
+            'pictures' => $this->getMedia('service_pics') ->map(function ($media){
+              return $media->getFullUrl();
+            })
         ];
     }
 
     public static function getSortableColumn() : string
     {
         return 'name';
+    }
+
+    // collections for this model
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('service_pics')
+            ->useDisk('service_pics');
     }
 
     // relationships

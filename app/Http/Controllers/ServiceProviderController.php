@@ -30,21 +30,28 @@ class ServiceProviderController extends Controller
         //dd($request->user());
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'category_id' => 'required|numeric'
+            'category_id' => 'required|numeric',
+            'picture' => 'required',
+            'picture_two' => 'nullable'
         ]);
 
         if ($validator->fails()) {
             return response()->sendJsonError($validator->errors(), ResponseMessage::INVALID_PARAMS, ResponseCode::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $response = $this->serviceRepository->newRecord(
+        $service = $this->serviceRepository->newRecord(
             $request->input('name'),
             $request->user()->id,
             $request->input('category_id')
         );
 
-        if ($response == Status::ERROR){
+        if (is_string($service) && $service === Status::ERROR){
             return response()->sendJsonError([], ResponseMessage::ERROR_OCCURRED, ResponseCode::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $service->addMedia($request->file('picture'))->toMediaCollection('service_pics');
+        if ($request->hasFile('picture_two') && $request->file('picture_two') != null){
+            $service->addMedia($request->file('picture_two'))->toMediaCollection('service_pics');
         }
 
         return response()->sendJsonSuccess([], sprintf(ResponseMessage::CREATE_WAS_SUCCESSFUL, 'Service'), ResponseCode::HTTP_CREATED);
