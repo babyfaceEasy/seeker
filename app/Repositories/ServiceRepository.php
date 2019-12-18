@@ -61,7 +61,7 @@ class ServiceRepository implements ServiceRepositoryInterface
         $record = Service::create($data);
 
         if (!empty($record)){
-            return Status::SUCCESS;
+            return $record;
         }
 
         return Status::ERROR;
